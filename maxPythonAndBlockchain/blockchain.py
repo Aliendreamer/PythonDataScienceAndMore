@@ -1,8 +1,14 @@
+import hashlib as hl
+from collections import OrderedDict
 # Initializing our (empty) blockchain list
+
+from  hash_util import hash_util_256,hash_block
+
 genesis_block = {
     'previous_hash': '',
     'index': 0,
-    'transactions': []
+    'transactions': [],
+    'proof':100
 }
 blockchain = [genesis_block]
 open_transactions = []
@@ -31,7 +37,7 @@ def get_balance(participant):
     for tx in tx_sender:
         if len(tx)>0:
             amount_sent+=tx[0]
-    
+
     tx_recipient=[[tx['amount'] for tx in block['transactions'] if tx['receiver']==participant] for block  in blockchain]
     amount_received=0
     for tx in tx_recipient:
@@ -47,11 +53,12 @@ def add_transaction(recipient, sender=owner, amount=1.0):
         :recipient: The recipient of the coins.
         :amount: The amount of coins sent with the transaction (default = 1.0)
     """
-    transaction = {
-        'sender': sender,
-        'recipient': recipient,
-        'amount': amount
-    }
+    # transaction = {
+    #     'sender': sender,
+    #     'recipient': recipient,
+    #     'amount': amount
+    # }
+    transaction=OrderedDict([('sender',sender),('recipient',recipient),('amount',amount)])
     if verify_transaction(transaction) :
         open_transactions.append(transaction)
         participants.add(sender)
@@ -61,19 +68,19 @@ def add_transaction(recipient, sender=owner, amount=1.0):
 
 def mine_block():
     last_block = blockchain[-1]
-    hashed_block = '-'.join([str(last_block[key]) for key in last_block])
-    reward_transaction={
-        'sender':'MINING',
-        'recipient':owner,
-        'amount':MINING_REWARD
-    }
-    copied_transactions=open_transactions[:] 
+    hashed_block = hash_block(last_block)
+    proof=proof_of_work()
+
+    reward_transaction=OrderedDict([('sender','Mining'),('recipient',owner),('amount',MINING_REWARD)])
+
+    copied_transactions=open_transactions[:]
     open_transactions.append(reward_transaction)
-    print(hashed_block)
+
     block = {
         'previous_hash': hashed_block,
         'index': len(blockchain),
-        'transactions': open_transactions
+        'transactions': open_transactions,
+        'proof':proof
     }
     blockchain.append(block)
     return True
@@ -102,7 +109,23 @@ def print_blockchain_elements():
         print('-' * 20)
 
 def hash_block(block):
-       return'-'.join([str(block[key]) for key in block])
+       #return'-'.join([str(block[key]) for key in block])
+       return hl.sha256(json.dumps(block,sort_keys=True).encode()).hexdigest()
+
+def valid_proof(transactions,last_hash,proof):
+    quess=(str(transactions)+str(last_hash)+str(proof)).encode()
+    quess_hash=hash_util_256(quess) 
+    return guess[0:2]=="00"
+
+def proof_of_work():
+    last_block=blockchain[-1]
+    last_hash=hash_block(last_block)
+    proof=0
+    while not valid_proof(open_transactions,last_hash,proof):
+         proof+=1
+    return proof
+
+
 
 def verify_chain():
     """ Verify the current blockchain and return True if it's valid, False otherwise."""
@@ -110,6 +133,8 @@ def verify_chain():
         if index==0:
             continue
         if block['previous_hash']!=hash_block(blockchain[-1]):
+            return False
+        if not valid_proof(block['transactions'][:-1],block['previos_hash'],block['proof']):
             return False
     return True;
 waiting_for_input = True
