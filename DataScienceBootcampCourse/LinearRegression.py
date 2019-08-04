@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
-
+sns.set()
 #%%
 data=pd.read_csv(r'DataScienceBootcampCourse\csvFiles\real_estate_price_size.csv')
 print(data)
