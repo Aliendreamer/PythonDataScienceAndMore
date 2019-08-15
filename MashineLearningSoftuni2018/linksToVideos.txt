@@ -1,0 +1,9 @@
+https://www.youtube.com/watch?v=KOodMbmOIxs course overview
+https://www.youtube.com/watch?time_continue=5904&v=J8DcixpKFSY introduction
+https://www.youtube.com/watch?v=qZ-qVtDaQMc  linear logistic regression
+https://www.youtube.com/watch?v=k0UCrV6jLNk model training
+https://www.youtube.com/watch?v=ORmU5KYVph4 three and ensemble methods
+https://www.youtube.com/watch?v=Z3z6DddlSCc vector mashines
+https://www.youtube.com/watch?v=yWKok2cuaMI clustering
+https://www.youtube.com/watch?time_continue=1&v=9WQ722d6HXc dimensionality
+https://www.youtube.com/watch?v=4KwVAMUT5P0 neuron networks
