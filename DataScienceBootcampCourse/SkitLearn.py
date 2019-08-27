@@ -38,7 +38,8 @@ reg.coef_
 
 
 #%%
-reg.predict(750)
+x =np.array([750]).reshape(-1,1);
+reg.predict(x)
 
 #%%
 
