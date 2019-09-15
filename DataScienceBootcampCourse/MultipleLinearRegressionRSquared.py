@@ -89,11 +89,6 @@ adjusted_r2
 #%% [markdown]
 # ### Adjusted R^2 function
 
-#%%
-
-
-
-#%%
 
 
 
